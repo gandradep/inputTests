@@ -2,143 +2,144 @@ let nameInput;
 let phoneInput;
 let companyInput;
 
-let selectedLanguage = "en";
-
-let placeholderEN = [
-  "Your Information",
-  "Name (required)",
-  "Phone (required)",
-  "Company (optional)",
-  "CONFIRM"
-];
-
-let placeholderZH = [
-  "您的資訊",
-  "姓名（必填）",
-  "電話（必填）",
-  "公司名稱（選填）",
-  "確認送出"
-];
-
-let activeInput = null;
 
 function setup() {
 
   createCanvas(windowWidth, windowHeight);
 
-  textAlign(CENTER, CENTER);
-  textFont("Arial");
-
   createInputs();
 
+  textAlign(CENTER, CENTER);
 }
+
 
 
 function draw() {
 
-  background(40, 100, 150);
-
-
-  let placeholder;
-
-  if (selectedLanguage === "en") {
-    placeholder = placeholderEN;
-  } else {
-    placeholder = placeholderZH;
-  }
-
+  background(40,100,150);
 
   fill(255);
 
-  textSize(50);
+  textSize(width*0.045);
+
   text(
-    placeholder[0],
+    "Your Information",
     width/2,
-    100
+    height*0.12
   );
 
 
   drawLabel(
-    placeholder[1],
-    width/2,
-    180
+    "Name (required)",
+    height*0.22
   );
 
   drawLabel(
-    placeholder[2],
-    width/2,
-    310
+    "Phone (required)",
+    height*0.37
   );
 
   drawLabel(
-    placeholder[3],
-    width/2,
-    440
+    "Company (optional)",
+    height*0.52
   );
 
-
-  // Confirm button
 
   fill(80);
+
   rectMode(CENTER);
 
   rect(
     width/2,
-    680,
-    300,
-    80,
+    height*0.82,
+    width*0.3,
+    height*0.1,
     15
   );
 
 
   fill(255);
 
-  textSize(35);
+  textSize(width*0.03);
 
   text(
-    placeholder[4],
+    "CONFIRM",
     width/2,
-    680
+    height*0.82
   );
 
 }
 
 
+
+function drawLabel(label,y){
+
+  fill(255);
+
+  textSize(width*0.025);
+
+  text(
+    label,
+    width/2,
+    y
+  );
+
+}
+
+
+
 function createInputs(){
 
-  let x = width/2 - 300;
+  let inputWidth = width*0.55;
+  let inputHeight = height*0.08;
 
 
   nameInput = createInput("");
-  nameInput.position(x,220);
-  nameInput.size(600,60);
+
+  nameInput.size(
+    inputWidth,
+    inputHeight
+  );
+
+  nameInput.position(
+    width/2-inputWidth/2,
+    height*0.27
+  );
 
 
   phoneInput = createInput("");
-  phoneInput.position(x,350);
-  phoneInput.size(600,60);
 
-  // This gives iPad a number keyboard
   phoneInput.attribute(
     "type",
     "tel"
   );
 
+  phoneInput.size(
+    inputWidth,
+    inputHeight
+  );
+
+  phoneInput.position(
+    width/2-inputWidth/2,
+    height*0.42
+  );
+
 
   companyInput = createInput("");
-  companyInput.position(x,480);
-  companyInput.size(600,60);
+
+  companyInput.size(
+    inputWidth,
+    inputHeight
+  );
+
+  companyInput.position(
+    width/2-inputWidth/2,
+    height*0.57
+  );
 
 
-  styleInputs();
 
-
-}
-
-
-function styleInputs(){
-
-  let inputs = [
+  let inputs=[
     nameInput,
     phoneInput,
     companyInput
@@ -149,76 +150,12 @@ function styleInputs(){
 
     inputs[i].style(
       "font-size",
-      "30px"
+      width*0.025+"px"
     );
 
     inputs[i].style(
       "text-align",
       "center"
-    );
-
-    inputs[i].style(
-      "border-radius",
-      "10px"
-    );
-
-    inputs[i].style(
-      "background",
-      "#444"
-    );
-
-    inputs[i].style(
-      "color",
-      "white"
-    );
-
-  }
-
-}
-
-
-
-function drawLabel(label,x,y){
-
-  fill(255);
-
-  textSize(25);
-
-  text(
-    label,
-    x,
-    y
-  );
-
-}
-
-
-
-function mousePressed(){
-
-
-  // confirm button
-
-  if(
-    mouseX > width/2-150 &&
-    mouseX < width/2+150 &&
-    mouseY > 640 &&
-    mouseY < 720
-  ){
-
-    console.log(
-      "NAME:",
-      nameInput.value()
-    );
-
-    console.log(
-      "PHONE:",
-      phoneInput.value()
-    );
-
-    console.log(
-      "COMPANY:",
-      companyInput.value()
     );
 
   }
