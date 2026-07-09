@@ -168,13 +168,13 @@ image(img, width*0.17, height*0.43, imgW, imgH);
   }
 
   // TOUCH MESSAGE
-  textAlign(CENTER,CENTER);
-  textSize(width*.03);
-  text(
-    "TOUCH TO BEGIN",
-    width/2,
-    height-90
-  );
+  // textAlign(CENTER,CENTER);
+  // textSize(width*.03);
+  // text(
+  //   "TOUCH TO BEGIN",
+  //   width/2,
+  //   height*0.95
+  // );
   if (attractManual) {
     drawAttractNavButtons();
   }
