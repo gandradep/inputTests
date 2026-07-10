@@ -14,6 +14,7 @@ let timeoutDuration = 120000;
 let lastInteraction;
 let selectedLanguage="en";
 let langIndex, langImg;
+let xtra = 0;
 let productInfoENG,productInfoZH;
 let beigeDorado, amarillo, cyan, violeta;
 let welcomeEN=[
@@ -50,6 +51,7 @@ let historyENG, historyZH;
 let historyPage;
 
 let nameInput,phoneInput, companyInput;
+let formMessage = "";
 let sheetURL = "https://script.google.com/macros/s/AKfycbyTbt20eEjTiQKsufJsQmOTuIPuaGHyqFpm90IcS7at6mH8CdRjXQW0Bt6c192iQz33/exec"
 
 
@@ -140,7 +142,7 @@ function drawAttract(){
   imageMode(CENTER);
   let img = productImg[currentSlide-1];
 
-let imgW = width * 0.26;
+let imgW = width * 0.28;
 let imgH = img.height * (imgW / img.width);
 
 image(img, width*0.17, height*0.43, imgW, imgH);
@@ -154,13 +156,13 @@ image(img, width*0.17, height*0.43, imgW, imgH);
   text(
     label[0],
     width/2,
-    height*.05
+    height*.07
   );
   // INFO
   textAlign(LEFT,TOP);
   textSize(width*.02);
   let x=width*.36;
-  let y=height*.15;
+  let y=height*.19;
 
   for(let i=1;i<label.length;i++){
     text(label[i],x,y);
@@ -197,14 +199,26 @@ function drawLanguage(){
   // language buttons
   drawButton(width*0.28, height*0.73, width*0.26, height*0.12, "English",0.035);
   drawButton(width*0.72,height*0.73,width*0.26,height*0.12,"中文",0.035);
-  drawScaledImage(venado, width*0.15, height*0.8, width*0.15);
+  push()
+  translate(width*0.15, height*0.75,);
+  rotate(radians(sin(xtra)*20))
+  drawScaledImage(venado, 0,0, width*0.15);
+  pop();
+  push()
+  rotate(radians(sin(xtra)))
   drawScaledImage(dragon, width*0.6, height*0.8, width*0.15);
-
+  pop()
+  xtra = xtra + 0.01;
 }
 function drawFiltro(){
   background(amarillo);
   imageMode(CENTER);
-  drawScaledImage(langImg, width*0.25, height*0.3, width*0.2);
+  push()
+  let imgScale = sin(xtra)*30
+  tint(255,180-imgScale)
+  drawScaledImage(langImg, width*0.25, height*0.3, width*0.25+imgScale);
+  xtra = 0.01 + xtra;
+
   let labels;
   let title;
   if (selectedLanguage === "en") {
@@ -226,6 +240,7 @@ function drawFiltro(){
       drawScaledImage(userType[i], width*0.75+(width*0.15), height*0.15+(i*height*0.18), width*0.1);
     }
   }
+  pop()
 }
 function drawHistory(){
 
@@ -270,12 +285,15 @@ function drawHistory(){
 
 
   textAlign(CENTER,CENTER);
-  textSize(width*0.02);
+  textSize(width*0.022);
+
+  const maxHistoryPages = 3;
+
 
   text(
-    historyPage < historyENG.length
-    ? (selectedLanguage==="en" ? "Tap to continue" : "點擊繼續")
-    : (selectedLanguage==="en" ? "Tap to return" : "點擊返回"),
+    historyPage < maxHistoryPages
+      ? (selectedLanguage==="en" ? "Tap to continue" : "點擊繼續")
+      : (selectedLanguage==="en" ? "Continue to coffee varieties" : "繼續查看咖啡品種"),
     width*0.5,
     height*0.92
   );
@@ -285,7 +303,7 @@ function drawHistory(){
 function drawGetInfo(){
   background(filtroResponse);
   fill(255);
-  let title = selectedLanguage==="en"? "Your Information" : "您的資訊";
+  let title = selectedLanguage==="en" ? "Let's Connect Over Coffee" : "一起分享咖啡故事";
   let nameLabel = selectedLanguage==="en"
     ? "Name (required)"
     : "姓名（必填）";
@@ -337,6 +355,9 @@ function drawGetInfo(){
     width*0.5,
     height*0.78
   );
+  fill(220);
+textAlign(CENTER);
+text(formMessage, width/2, height*0.7);
 }
 function drawAfterInfo(){
 
@@ -446,11 +467,11 @@ function mousePressed(){
   }
 }
   if (currentState == HISTORY) {
-
       if (historyPage < 3) {
         historyPage++;
       } else {
         currentState = ATTRACT;
+        attractManual=true;
         historyPage = 1;
       }
 
@@ -459,9 +480,16 @@ function mousePressed(){
   if(currentState === GETINFO){
     if(insideButton(width*0.5,height*0.78,width*0.26,height*0.1)){
 
-      userName = nameInput.value();
-      userPhone = phoneInput.value();
-      userCompany = companyInput.value();
+      userName = nameInput.value().trim();
+      userPhone = phoneInput.value().trim();
+      userCompany = companyInput.value().trim();
+
+      if(userName === "" || userPhone === ""){
+         formMessage = selectedLanguage==="en"
+    ? "Please enter your name and phone number"
+    : "請輸入姓名和電話";
+        return;
+      }
 
       saveUserData();
 
@@ -470,10 +498,10 @@ function mousePressed(){
       nameInput.value("");
       phoneInput.value("");
       companyInput.value("");
-
+      formMessage = "";
       return;
     }
-  }
+}
   if(currentState===AFTERINFO){
     if(insideButton(width*0.5,height*0.45,width*0.4,height*0.1)){
       currentState=HISTORY;
@@ -529,13 +557,10 @@ function insideButton(x, y, w, h) {
 function drawFooterNav() {
 
   if (currentState == ATTRACT || currentState == LANGUAGE) return;
-
   push();
-
   imageMode(CENTER);
   drawScaledImage(menuImg,width*0.1,height*0.9,width*0.085);
   drawScaledImage(home,width*0.9,height*0.9,width*0.085);
-
   pop();
 }
 function handleGlobalNav() {
